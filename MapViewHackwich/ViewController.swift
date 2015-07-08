@@ -7,19 +7,38 @@
 //
 
 import UIKit
+import MapKit
+import CoreLocation
 
 class ViewController: UIViewController {
+    
+    @IBOutlet weak var myMapView: MKMapView!
+    let locationManager = CLLocationManager()
 
+
+    //setup
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    @IBAction func displayLocationButtonTapped(sender: AnyObject) {
+        locationManager.stopUpdatingLocation()
+        myMapView.showsUserLocation = true
+        
+        //getting the coordinate from the location manager
+        let coordinate = locationManager.location?.coordinate
+        let span = MKCoordinateSpanMake(0.01, 0.01)
+        let region = MKCoordinateRegionMake(coordinate!, span)
+        myMapView.setRegion(region, animated: true)
+        
+        //configuring an annotation
+        let anno = MKPointAnnotation()
+        anno.title = "My location"
+        anno.subtitle = "This is a location that I got from the locatoin manager."
+        myMapView.addAnnotation(anno)
+        
+        
     }
-
-
 }
 
